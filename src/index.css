@@ -1,0 +1,62 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Apple Light Theme */
+    --background: 240 5% 96%; /* #f4f4f5 */
+    --foreground: 240 10% 4%; 
+    --card: 0 0% 100%;
+    --card-foreground: 240 10% 4%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 240 10% 4%;
+    --primary: 211 100% 50%; /* iOS Blue */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 10% 4%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 211 100% 95%;
+    --accent-foreground: 211 100% 40%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 90%;
+    --input: 240 6% 90%;
+    --ring: 211 100% 50%;
+    --radius: 0.75rem; /* softer, apple-like rounding */
+  }
+
+  .dark {
+    /* Apple Dark Theme */
+    --background: 240 3% 11%; /* #1C1C1E */
+    --foreground: 0 0% 98%;
+    --card: 240 2% 17%; /* #2C2C2E */
+    --card-foreground: 0 0% 98%;
+    --popover: 240 2% 17%;
+    --popover-foreground: 0 0% 98%;
+    --primary: 211 100% 52%; /* iOS Blue Dark */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 25%;
+    --secondary-foreground: 0 0% 98%;
+    --muted: 240 4% 20%;
+    --muted-foreground: 240 5% 65%;
+    --accent: 211 100% 15%;
+    --accent-foreground: 211 100% 85%;
+    --destructive: 0 62% 40%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 240 4% 20%;
+    --input: 240 4% 20%;
+    --ring: 211 100% 52%;
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased overflow-hidden;
+  }
+}

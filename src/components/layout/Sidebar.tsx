@@ -1,7 +1,8 @@
 import { useAppStore } from '@/store/useAppStore';
-import { Plus, Folder, LayoutGrid, Settings } from 'lucide-react';
+import { Plus, Folder, LayoutGrid, Settings, Edit2 } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/lib/db';
+import { useState } from 'react';
 
 export function Sidebar() {
   const theme = useAppStore(state => state.theme);
@@ -10,6 +11,12 @@ export function Sidebar() {
 
   const collections = useLiveQuery(() => db.collections.toArray()) || [];
   const requests = useLiveQuery(() => db.requests.toArray()) || [];
+
+  const [editingColId, setEditingColId] = useState<string | null>(null);
+  const [editName, setEditName] = useState('');
+  
+  const [editingReqId, setEditingReqId] = useState<string | null>(null);
+  const [editReqName, setEditReqName] = useState('');
 
   const handleCreateCollection = async () => {
     const colId = crypto.randomUUID();
@@ -33,6 +40,36 @@ export function Sidebar() {
     });
     
     setActiveIds(colId, reqId);
+  };
+
+  const handleAddRequest = async (e: React.MouseEvent, colId: string) => {
+    e.stopPropagation();
+    const reqId = crypto.randomUUID();
+    await db.requests.add({
+      id: reqId,
+      collectionId: colId,
+      name: 'New Request',
+      method: 'GET',
+      url: 'https://jsonplaceholder.typicode.com/todos/1',
+      headers: {},
+      params: {},
+      body: { type: 'none', content: '' }
+    });
+    setActiveIds(colId, reqId);
+  };
+
+  const saveEdit = async (colId: string) => {
+    if (editName.trim()) {
+      await db.collections.update(colId, { name: editName });
+    }
+    setEditingColId(null);
+  };
+
+  const saveReqEdit = async (reqId: string) => {
+    if (editReqName.trim()) {
+      await db.requests.update(reqId, { name: editReqName });
+    }
+    setEditingReqId(null);
   };
 
   return (
@@ -61,22 +98,67 @@ export function Sidebar() {
         ) : (
           <div className="space-y-1 mt-2">
             {collections.map(col => (
-              <div key={col.id} className="text-sm">
-                <div className="px-2 py-1.5 flex items-center gap-2 text-foreground font-medium hover:bg-muted rounded-md cursor-pointer transition-colors">
-                  <Folder className="w-4 h-4 text-primary/70" />
-                  {col.name}
+              <div key={col.id} className="text-sm group">
+                <div className="px-2 py-1.5 flex items-center justify-between text-foreground font-medium hover:bg-muted rounded-md cursor-pointer transition-colors">
+                  <div className="flex items-center gap-2 flex-1">
+                    <Folder className="w-4 h-4 text-primary/70" />
+                    {editingColId === col.id ? (
+                      <input 
+                        autoFocus
+                        value={editName}
+                        onChange={e => setEditName(e.target.value)}
+                        onBlur={() => saveEdit(col.id)}
+                        onKeyDown={e => e.key === 'Enter' && saveEdit(col.id)}
+                        className="bg-background border border-border rounded px-1 text-sm outline-none w-[120px]"
+                      />
+                    ) : (
+                      <span className="truncate flex-1 max-w-[124px]">{col.name}</span>
+                    )}
+                  </div>
+                  <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                    <button 
+                      onClick={(e) => { e.stopPropagation(); setEditingColId(col.id); setEditName(col.name); }} 
+                      className="p-1 hover:bg-background rounded text-muted-foreground hover:text-foreground"
+                    >
+                      <Edit2 className="w-3 h-3" />
+                    </button>
+                    <button 
+                      onClick={(e) => handleAddRequest(e, col.id)} 
+                      className="p-1 hover:bg-background rounded text-muted-foreground hover:text-foreground"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                    </button>
+                  </div>
                 </div>
                 <div className="pl-6 space-y-1 mt-1">
                   {requests.filter(r => r.collectionId === col.id).map(req => (
                      <div 
                         key={req.id} 
                         onClick={() => setActiveIds(col.id, req.id)}
-                        className={`px-2 py-1.5 flex items-center gap-2 rounded-md cursor-pointer text-[13px] transition-colors ${activeRequestId === req.id ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
+                        className={`group/req px-2 py-1.5 flex items-center gap-2 rounded-md cursor-pointer text-[13px] transition-colors ${activeRequestId === req.id ? 'bg-primary/10 text-primary font-medium' : 'text-muted-foreground hover:bg-muted hover:text-foreground'}`}
                      >
                        <span className={`text-[10px] font-bold ${req.method === 'GET' ? 'text-green-500' : req.method === 'POST' ? 'text-yellow-500' : 'text-blue-500'}`}>
                          {req.method}
                        </span>
-                       <span className="truncate">{req.name}</span>
+                       
+                       {editingReqId === req.id ? (
+                          <input 
+                            autoFocus
+                            value={editReqName}
+                            onChange={e => setEditReqName(e.target.value)}
+                            onBlur={() => saveReqEdit(req.id)}
+                            onKeyDown={e => e.key === 'Enter' && saveReqEdit(req.id)}
+                            className="bg-background border border-border text-foreground rounded px-1 text-xs outline-none w-[100px]"
+                          />
+                        ) : (
+                          <span className="truncate flex-1">{req.name}</span>
+                        )}
+                        <button 
+                          onClick={(e) => { e.stopPropagation(); setEditingReqId(req.id); setEditReqName(req.name); }} 
+                          className="opacity-0 group-hover/req:opacity-100 p-0.5 hover:text-foreground transition-opacity text-muted-foreground"
+                        >
+                          <Edit2 className="w-3 h-3" />
+                        </button>
                      </div>
                   ))}
                 </div>

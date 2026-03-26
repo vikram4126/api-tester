@@ -28,7 +28,19 @@ export function useApiExecutor() {
       if (!request) throw new Error('No active request selected');
 
       const vars = environment?.variables || {};
-      const injectedUrl = injectVariables(request.url, vars);
+      let injectedUrl = injectVariables(request.url, vars);
+      
+      if (request.params && Object.keys(request.params).length > 0) {
+        try {
+          const urlObj = new URL(injectedUrl);
+          Object.entries(request.params).forEach(([key, val]) => {
+            if (key) {
+               urlObj.searchParams.append(injectVariables(key, vars), injectVariables(val, vars));
+            }
+          });
+          injectedUrl = urlObj.toString();
+        } catch(e) { /* ignore invalid url */ }
+      }
       
       const targetUrl = PROXY_URL + encodeURIComponent(injectedUrl);
       

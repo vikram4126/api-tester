@@ -5,6 +5,8 @@ import { db, type RequestItem } from '@/lib/db';
 import { useApiExecutor } from '@/hooks/useApiExecutor';
 import { CodeEditor } from '@/components/ui/CodeEditor';
 import { SnippetGenerator } from '@/components/request/SnippetGenerator';
+import { KeyValueEditor } from '@/components/request/KeyValueEditor';
+import { AuthEditor } from '@/components/request/AuthEditor';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
@@ -129,12 +131,25 @@ export function Workbench() {
           </div>
         )}
 
-        {(activeTab === 'params' || activeTab === 'headers') && (
-          <div className="rounded-md border border-border shadow-sm overflow-hidden bg-card">
-              <div className="p-4 text-center text-muted-foreground text-sm">
-                  {activeTab} key-value editor placeholder
-              </div>
-          </div>
+        {activeTab === 'params' && (
+          <KeyValueEditor 
+            items={request.params || {}} 
+            onChange={(params) => db.requests.update(request.id, { params })} 
+          />
+        )}
+        
+        {activeTab === 'headers' && (
+          <KeyValueEditor 
+            items={request.headers || {}} 
+            onChange={(headers) => db.requests.update(request.id, { headers })} 
+          />
+        )}
+
+        {activeTab === 'auth' && (
+          <AuthEditor 
+            headers={request.headers || {}} 
+            onChange={(headers) => db.requests.update(request.id, { headers })} 
+          />
         )}
 
         {activeTab === 'snippets' && (

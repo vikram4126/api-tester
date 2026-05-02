@@ -106,7 +106,7 @@ export function Workbench() {
           <div className="flex-1 border border-border rounded-md overflow-hidden bg-card flex flex-col shadow-sm">
             <div className="p-2 border-b border-border bg-muted/30 flex items-center">
               <select 
-                className="bg-transparent text-xs text-muted-foreground focus:outline-none font-medium appearance-none cursor-pointer"
+                className="bg-transparent text-xs text-foreground focus:outline-none font-medium cursor-pointer border border-border rounded px-2 py-1"
                 value={request.body.type}
                 onChange={(e) => {
                   if (activeRequestId) db.requests.update(activeRequestId, { body: { ...request.body, type: e.target.value as any } });

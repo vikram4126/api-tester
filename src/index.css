@@ -3,52 +3,52 @@
 
 @layer base {
   :root {
-    /* Apple Light Theme */
-    --background: 240 5% 96%; /* #f4f4f5 */
-    --foreground: 240 10% 4%; 
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 4%;
+    /* Light Mode - Clean Professional */
+    --background: 0 0% 100%;
+    --foreground: 222 47% 11%;
+    --card: 0 0% 98%;
+    --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 4%;
-    --primary: 211 100% 50%; /* iOS Blue */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 10% 4%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    --accent: 211 100% 95%;
-    --accent-foreground: 211 100% 40%;
+    --popover-foreground: 222 47% 11%;
+    --primary: 196 100% 47%; /* Keep KPMG Cyan */
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222 47% 11%;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
+    --accent: 210 40% 96%;
+    --accent-foreground: 222 47% 11%;
     --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 211 100% 50%;
-    --radius: 0.75rem; /* softer, apple-like rounding */
+    --destructive-foreground: 210 40% 98%;
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 196 100% 47%;
+    --radius: 0.75rem;
   }
 
   .dark {
-    /* Apple Dark Theme */
-    --background: 240 3% 11%; /* #1C1C1E */
-    --foreground: 0 0% 98%;
-    --card: 240 2% 17%; /* #2C2C2E */
-    --card-foreground: 0 0% 98%;
-    --popover: 240 2% 17%;
-    --popover-foreground: 0 0% 98%;
-    --primary: 211 100% 52%; /* iOS Blue Dark */
+    /* Stitch Design - Premium Deep Blue Theme */
+    --background: 225 60% 5%; /* #050a14 */
+    --foreground: 210 40% 98%; 
+    --card: 217 50% 8%; /* #0a111e */
+    --card-foreground: 210 40% 98%;
+    --popover: 217 50% 8%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 196 100% 47%; /* #00aeef */
     --primary-foreground: 0 0% 100%;
-    --secondary: 240 4% 25%;
-    --secondary-foreground: 0 0% 98%;
-    --muted: 240 4% 20%;
-    --muted-foreground: 240 5% 65%;
-    --accent: 211 100% 15%;
-    --accent-foreground: 211 100% 85%;
+    --secondary: 222 39% 11%; /* #111827 */
+    --secondary-foreground: 210 40% 98%;
+    --muted: 222 39% 11%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 196 100% 20%;
+    --accent-foreground: 196 100% 90%;
     --destructive: 0 62% 40%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 240 4% 20%;
-    --input: 240 4% 20%;
-    --ring: 211 100% 52%;
-    --radius: 0.75rem;
+    --destructive-foreground: 210 40% 98%;
+    --border: 215 25% 15%;
+    --input: 222 39% 11%;
+    --ring: 196 100% 47%;
   }
+
 }
 
 @layer base {
@@ -57,5 +57,7 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased overflow-hidden;
+    background-image: radial-gradient(circle at 50% -20%, hsl(var(--primary) / 0.05), transparent 60%),
+                      radial-gradient(circle at 0% 0%, hsl(var(--primary) / 0.02), transparent 40%);
   }
 }

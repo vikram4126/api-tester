@@ -46,40 +46,65 @@ export function Inspector() {
   const isOk = data.status >= 200 && data.status < 300;
 
   return (
-    <div className="w-80 h-full border-l border-border/50 bg-secondary/30 backdrop-blur-xl flex flex-col z-20">
-      <div className="p-4 border-b border-border/50 flex flex-col gap-2 shadow-sm">
+    <div className="w-[450px] h-full border-l border-border/50 bg-card/40 backdrop-blur-3xl flex flex-col z-20 relative overflow-hidden">
+
+      {/* Decorative gradient blur */}
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+      
+
+      <div className="p-8 border-b border-border/50 flex flex-col gap-6 bg-card/30 relative z-10">
         <div className="flex items-center justify-between">
-          <h3 className="font-semibold text-sm">Response</h3>
-          <div className={`flex items-center gap-2 text-xs font-mono font-medium px-2 py-0.5 rounded-full ring-1 ${isOk ? 'text-emerald-500 bg-emerald-500/10 ring-emerald-500/20' : 'text-destructive bg-destructive/10 ring-destructive/20'}`}>
+          <h3 className="font-black text-[10px] uppercase tracking-[0.25em] text-muted-foreground/30">Response Data</h3>
+          <div className={`flex items-center gap-2.5 text-[10px] font-black tracking-widest uppercase px-4 py-1.5 rounded-xl border ${
+            isOk 
+              ? 'text-emerald-400 bg-emerald-400/5 border-emerald-400/20 shadow-[0_0_15px_rgba(52,211,153,0.1)]' 
+              : 'text-destructive bg-destructive/5 border-destructive/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
+          }`}>
+            <div className={`w-1.5 h-1.5 rounded-full ${isOk ? 'bg-emerald-400' : 'bg-destructive'} animate-pulse`} />
             {data.status} {data.statusText}
           </div>
         </div>
-        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground p-3">
-          <div className="flex items-center gap-1" title="Time to first byte">
-            <Clock className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-muted-foreground/40">
+          <div className="flex items-center gap-2" title="Time to first byte">
+            <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
+              <Clock className="w-3.5 h-3.5 text-primary" />
+            </div>
             <span>{data.time} ms</span>
           </div>
-          <div className="flex items-center gap-1" title="Payload size">
-            <Database className="w-3.5 h-3.5" />
+          <div className="flex items-center gap-2" title="Payload size">
+            <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
+              <Database className="w-3.5 h-3.5 text-primary" />
+            </div>
             <span>{(data.size / 1024).toFixed(2)} KB</span>
           </div>
         </div>
       </div>
+
       
       {/* Response Tabs */}
-      <div className="flex items-center gap-4 px-3 border-b border-border bg-card text-xs">
-        <button className="py-2 px-1 border-b-2 border-primary text-foreground font-medium">Body</button>
-        <button className="py-2 px-1 border-b-2 border-transparent text-muted-foreground hover:text-foreground">Headers ({Object.keys(data.headers || {}).length})</button>
+      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-card/5 text-[11px] font-black uppercase tracking-widest relative z-10">
+        <button className="py-4 px-1 border-b-2 border-primary text-primary relative">
+          Body
+          <div className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,174,239,0.8)] rounded-full" />
+        </button>
+        <button className="py-4 px-1 border-b-2 border-transparent text-muted-foreground/40 hover:text-foreground">Headers ({Object.keys(data.headers || {}).length})</button>
       </div>
 
-      <div className="p-2 border-b border-border bg-muted/30 flex items-center justify-between">
-        <select className="bg-transparent text-xs text-muted-foreground focus:outline-none font-medium appearance-none pointer-events-none">
-          <option>{isJSON ? 'JSON' : 'Text'}</option>
-        </select>
-        <button className="text-muted-foreground hover:text-foreground p-1 rounded hover:bg-muted" title="Copy to clipboard" onClick={() => navigator.clipboard.writeText(valString)}>
+
+      <div className="p-3 border-b border-border/50 bg-muted/20 flex items-center justify-between relative z-10 px-6">
+        <div className="flex items-center gap-2">
+          <div className="w-2 h-2 rounded-full bg-primary/40" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">{isJSON ? 'JSON Output' : 'Plain Text'}</span>
+        </div>
+        <button 
+          className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20 shadow-sm hover:shadow-primary/10" 
+          title="Copy to clipboard" 
+          onClick={() => navigator.clipboard.writeText(valString)}
+        >
           <Copy className="w-3.5 h-3.5" />
         </button>
       </div>
+
 
       <div className="flex-1 overflow-hidden relative">
          <CodeEditor value={valString} language={isJSON ? 'json' : 'plaintext'} readOnly={true} />

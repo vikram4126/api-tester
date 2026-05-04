@@ -17,18 +17,28 @@ function App() {
   }, [theme]);
 
   return (
-    <div className="flex h-screen w-full bg-background text-foreground overflow-hidden">
-      {/* 3-column "IDE" layout */}
+    <div className="flex h-screen w-full bg-background text-foreground overflow-hidden font-sans">
+      {/* 3-column "IDE" layout as per Stitch */}
       <Sidebar />
       <div className="flex flex-1 flex-col border-r border-border min-w-0">
-        {/* Top Navigation / Environment bar */}
-        <header className="h-14 border-b border-border/50 flex items-center px-4 justify-between bg-background/80 backdrop-blur-xl shrink-0 z-10 relative">
-          <h1 className="font-semibold text-lg flex items-center gap-2">
-            <span className="text-primary bg-primary/10 p-1.5 rounded-md">
-              <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-            </span>
-            Smart Request
-          </h1>
+        {/* Top Navigation / Environment bar - 64px height */}
+        <header className="h-16 border-b border-border/50 flex items-center px-8 justify-between bg-card/30 backdrop-blur-2xl shrink-0 z-10 relative">
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-4 group cursor-default">
+              <img 
+                src="/kpmg-logo.svg" 
+                alt="KPMG" 
+                className="h-6 w-auto dark:brightness-0 dark:invert opacity-90 group-hover:opacity-100 transition-opacity" 
+              />
+
+              <div className="w-px h-6 bg-border/50 mx-2 hidden sm:block"></div>
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block">
+                API Tester <span className="text-primary/50">v1.0</span>
+              </span>
+            </div>
+          </div>
+
+
           <EnvironmentManager />
         </header>
         <Workbench />

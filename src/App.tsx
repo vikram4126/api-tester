@@ -32,8 +32,8 @@ function App() {
               />
 
               <div className="w-px h-6 bg-border/50 mx-2 hidden sm:block"></div>
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-muted-foreground/40 hidden sm:block">
-                API Tester <span className="text-primary/50">v1.0</span>
+              <span className="text-[12px] font-bold text-slate-800 dark:text-white hidden sm:block transition-colors">
+                API Tester <span className="text-primary dark:text-white/80">v.0</span>
               </span>
             </div>
           </div>

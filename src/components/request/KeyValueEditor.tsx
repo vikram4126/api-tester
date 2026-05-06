@@ -39,57 +39,62 @@ export function KeyValueEditor({ items, onChange }: KeyValueEditorProps) {
 
   return (
     <div className="flex flex-col border border-border/50 rounded-xl overflow-hidden bg-card/30 backdrop-blur-md shadow-lg shadow-black/20">
-      <div className="grid grid-cols-[1fr_1fr_40px] gap-px bg-white/5 border-b border-border/50 text-[10px] font-black text-muted-foreground/30 uppercase tracking-[0.2em]">
-        <div className="p-3 pl-5">Param Key</div>
-        <div className="p-3 border-l border-border/50">Param Value</div>
-        <div className="p-3 border-l border-border/50 text-center"></div>
+      <div className="grid grid-cols-[1fr_1fr_40px] gap-px bg-slate-900 border-b border-border/50 text-xs font-bold text-white shadow-md">
+        <div className="p-3 pl-5 border-r border-white/10">Param Key</div>
+        <div className="p-3 border-r border-white/10">Param Value</div>
+        <div className="p-3 text-center"></div>
       </div>
 
       
-      {entries.map(([k, v], i) => (
-        <div key={i} className="grid grid-cols-[1fr_1fr_40px] gap-px bg-background/20 border-b border-border/30 focus-within:ring-2 focus-within:ring-primary/20 focus-within:relative z-10 transition-all">
+      <div className="flex flex-col p-2 space-y-2">
+        {entries.map(([k, v], i) => (
+          <div key={i} className="grid grid-cols-[1fr_1fr_40px] gap-2 items-center">
+            <div className="relative group">
+              <input 
+                value={k}
+                onChange={(e) => updateKey(k, e.target.value, v)}
+                placeholder="Key"
+                className="w-full p-2.5 pl-4 text-[13px] bg-secondary/50 border border-border hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-foreground font-mono placeholder:text-muted-foreground/50"
+              />
+            </div>
+            <div className="relative group">
+              <input 
+                value={v}
+                onChange={(e) => updateValue(k, e.target.value)}
+                placeholder="Value"
+                className="w-full p-2.5 pl-4 text-[13px] bg-secondary/50 border border-border hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-foreground font-mono placeholder:text-muted-foreground/50"
+              />
+            </div>
+            <button 
+              onClick={() => removeRow(k)}
+              className="w-10 h-10 flex items-center justify-center bg-secondary/30 hover:bg-destructive/10 text-muted-foreground/60 hover:text-destructive transition-all rounded-xl border border-border hover:border-destructive/20"
+            >
+              <X className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        ))}
+
+        <div className="grid grid-cols-[1fr_1fr_40px] gap-2 items-center pt-2 border-t border-border/50">
           <input 
-            value={k}
-            onChange={(e) => updateKey(k, e.target.value, v)}
-            placeholder="Key"
-            className="p-3 pl-5 text-[13px] focus:outline-none focus:bg-primary/5 text-foreground bg-transparent font-mono placeholder:text-muted-foreground/10"
+            value={newKey}
+            onChange={(e) => setNewKey(e.target.value)}
+            placeholder="New Key..."
+            className="w-full p-2.5 pl-4 text-[13px] bg-primary/5 border border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-primary font-mono placeholder:text-primary/40"
           />
           <input 
-            value={v}
-            onChange={(e) => updateValue(k, e.target.value)}
-            placeholder="Value"
-            className="p-3 text-[13px] focus:outline-none focus:bg-primary/5 text-foreground bg-transparent font-mono border-l border-border/30 placeholder:text-muted-foreground/10"
+            value={newValue}
+            onChange={(e) => setNewValue(e.target.value)}
+            placeholder="New Value..."
+            className="w-full p-2.5 pl-4 text-[13px] bg-primary/5 border border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-primary font-mono placeholder:text-primary/40"
+            onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           />
           <button 
-            onClick={() => removeRow(k)}
-            className="flex items-center justify-center hover:bg-destructive/10 text-muted-foreground/40 hover:text-destructive transition-all border-l border-border/30"
+            onClick={handleAdd}
+            className="w-10 h-10 flex items-center justify-center bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all rounded-xl border border-primary/20 shadow-sm"
           >
-            <X className="w-3.5 h-3.5" />
+            <Plus className="w-4 h-4" />
           </button>
         </div>
-
-      ))}
-
-      <div className="grid grid-cols-[1fr_1fr_40px] gap-px bg-primary/5 focus-within:ring-2 focus-within:ring-primary/20 focus-within:relative z-10 transition-all">
-        <input 
-          value={newKey}
-          onChange={(e) => setNewKey(e.target.value)}
-          placeholder="New Key..."
-          className="p-3 pl-5 text-[13px] focus:outline-none focus:bg-primary/10 text-primary font-mono placeholder:text-primary/20"
-        />
-        <input 
-          value={newValue}
-          onChange={(e) => setNewValue(e.target.value)}
-          placeholder="New Value..."
-          className="p-3 text-[13px] focus:outline-none focus:bg-primary/10 text-primary font-mono border-l border-border/30 placeholder:text-primary/20"
-          onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
-        />
-        <button 
-          onClick={handleAdd}
-          className="flex items-center justify-center bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all border-l border-border/30"
-        >
-          <Plus className="w-4 h-4" />
-        </button>
       </div>
 
     </div>

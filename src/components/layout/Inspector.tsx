@@ -54,8 +54,8 @@ export function Inspector() {
 
       <div className="p-8 border-b border-border/50 flex flex-col gap-6 bg-card/30 relative z-10">
         <div className="flex items-center justify-between">
-          <h3 className="font-black text-[10px] uppercase tracking-[0.25em] text-muted-foreground/30">Response Data</h3>
-          <div className={`flex items-center gap-2.5 text-[10px] font-black tracking-widest uppercase px-4 py-1.5 rounded-xl border ${
+          <h3 className="font-bold text-[13px] text-muted-foreground/60">Response Data</h3>
+          <div className={`flex items-center gap-2.5 text-[11px] font-bold px-4 py-1.5 rounded-xl border ${
             isOk 
               ? 'text-emerald-400 bg-emerald-400/5 border-emerald-400/20 shadow-[0_0_15px_rgba(52,211,153,0.1)]' 
               : 'text-destructive bg-destructive/5 border-destructive/20 shadow-[0_0_15px_rgba(239,68,68,0.1)]'
@@ -64,7 +64,7 @@ export function Inspector() {
             {data.status} {data.statusText}
           </div>
         </div>
-        <div className="flex items-center gap-8 text-[11px] font-black uppercase tracking-widest text-muted-foreground/40">
+        <div className="flex items-center gap-8 text-xs font-bold text-muted-foreground/60">
           <div className="flex items-center gap-2" title="Time to first byte">
             <div className="w-7 h-7 bg-primary/10 rounded-lg flex items-center justify-center border border-primary/20">
               <Clock className="w-3.5 h-3.5 text-primary" />
@@ -82,19 +82,19 @@ export function Inspector() {
 
       
       {/* Response Tabs */}
-      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-card/5 text-[11px] font-black uppercase tracking-widest relative z-10">
-        <button className="py-4 px-1 border-b-2 border-primary text-primary relative">
+      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-slate-900 text-xs font-bold relative z-10 shadow-inner">
+        <button className="py-4 px-1 border-b-2 border-primary text-white relative">
           Body
           <div className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,174,239,0.8)] rounded-full" />
         </button>
-        <button className="py-4 px-1 border-b-2 border-transparent text-muted-foreground/40 hover:text-foreground">Headers ({Object.keys(data.headers || {}).length})</button>
+        <button className="py-4 px-1 border-b-2 border-transparent text-white/50 hover:text-white">Headers ({Object.keys(data.headers || {}).length})</button>
       </div>
 
 
       <div className="p-3 border-b border-border/50 bg-muted/20 flex items-center justify-between relative z-10 px-6">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary/40" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground/40">{isJSON ? 'JSON Output' : 'Plain Text'}</span>
+          <span className="text-[11px] font-bold text-muted-foreground/60">{isJSON ? 'JSON Output' : 'Plain Text'}</span>
         </div>
         <button 
           className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20 shadow-sm hover:shadow-primary/10" 

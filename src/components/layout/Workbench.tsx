@@ -53,7 +53,7 @@ export function Workbench() {
       <div className="flex items-center gap-4 p-6 border-b border-border/50 bg-card/10 backdrop-blur-md z-10">
         <div className="flex-1 flex items-center gap-0 bg-secondary/30 rounded-xl border border-border/50 focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden group shadow-inner">
           <select 
-            className="bg-transparent text-primary text-[11px] font-black uppercase tracking-wider rounded-none px-5 py-3 focus:outline-none cursor-pointer hover:bg-white/5 transition-all border-r border-border/50"
+            className="bg-transparent text-primary text-sm font-bold rounded-none px-5 py-3 focus:outline-none cursor-pointer hover:bg-accent transition-all border-r border-border/50"
             value={request.method}
             onChange={(e) => updateMethod(e.target.value)}
           >
@@ -66,7 +66,7 @@ export function Workbench() {
           <input 
             type="text" 
             placeholder="https://api.example.com/v1/users"
-            className="flex-1 bg-transparent px-4 py-3 text-sm focus:outline-none text-foreground font-mono placeholder:text-muted-foreground/20 selection:bg-primary/30"
+            className="flex-1 bg-transparent px-4 py-3 text-sm focus:outline-none text-foreground font-mono placeholder:text-muted-foreground/50 selection:bg-primary/30"
             value={request.url}
             onChange={(e) => updateUrl(e.target.value)}
           />
@@ -76,7 +76,7 @@ export function Workbench() {
           whileTap={{ scale: 0.98, translateY: 0 }}
           onClick={handleSend}
           disabled={isFetching}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground font-black uppercase tracking-[0.15em] w-[180px] py-3 rounded-xl flex items-center justify-center gap-3 text-[11px] transition-all shadow-xl shadow-primary/20 disabled:opacity-50 h-[46px] border border-primary/20 shrink-0"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold w-[180px] py-3 rounded-xl flex items-center justify-center gap-3 text-sm transition-all shadow-xl shadow-primary/20 disabled:opacity-50 h-[46px] border border-primary/20 shrink-0"
         >
           {isFetching ? (
             <div className="animate-spin w-3.5 h-3.5 border-2 border-primary-foreground border-t-transparent rounded-full" />
@@ -90,15 +90,15 @@ export function Workbench() {
 
 
       {/* TABS */}
-      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-card/5 text-[11px] font-black uppercase tracking-widest overflow-x-auto no-scrollbar">
+      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-slate-900 text-xs font-bold overflow-x-auto no-scrollbar shadow-inner">
         {(['params', 'headers', 'auth', 'body', 'snippets'] as const).map(tab => (
           <button 
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`py-4 px-1 border-b-2 transition-all relative whitespace-nowrap ${
               activeTab === tab 
-                ? 'border-primary text-primary' 
-                : 'border-transparent text-muted-foreground/40 hover:text-foreground'
+                ? 'border-primary text-white' 
+                : 'border-transparent text-white/50 hover:text-white'
             }`}
           >
             {tab}

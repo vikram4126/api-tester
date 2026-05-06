@@ -40,15 +40,15 @@ export function SnippetGenerator() {
 
   return (
     <div className="flex flex-col h-full bg-card/30 backdrop-blur-md rounded-xl border border-border/50 overflow-hidden p-3 shadow-lg shadow-black/20">
-      <div className="flex items-center gap-3 mb-3 p-2 bg-white/5 rounded-xl border border-white/5">
+      <div className="flex items-center gap-3 mb-3 p-2 bg-muted rounded-xl border border-border">
         {['cURL', 'Fetch', 'Python Requests'].map(l => (
           <button 
            key={l} 
            onClick={() => setLang(l)} 
-           className={`px-4 py-2 text-[10px] font-black uppercase tracking-widest rounded-lg transition-all ${
+           className={`px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${
              lang === l 
                ? 'bg-primary text-white shadow-[0_0_15px_rgba(0,174,239,0.3)]' 
-               : 'text-muted-foreground/40 hover:bg-white/5 hover:text-foreground'
+               : 'text-muted-foreground/60 hover:bg-accent hover:text-foreground'
            }`}
           >
             {l}

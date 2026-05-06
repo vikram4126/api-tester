@@ -12,7 +12,7 @@ export function CodeEditor({ value, language = "json", onChange, readOnly = fals
   const theme = useAppStore(state => state.theme);
 
   return (
-    <div className="flex-1 w-full h-full relative border border-border/50 rounded-xl overflow-hidden bg-[#1e1e1e]">
+    <div className="flex-1 w-full h-full relative border border-border/50 rounded-none overflow-hidden bg-[#1e1e1e]">
 
       <Editor
         height="100%"

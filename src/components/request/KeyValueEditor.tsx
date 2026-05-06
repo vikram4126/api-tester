@@ -38,10 +38,10 @@ export function KeyValueEditor({ items, onChange }: KeyValueEditorProps) {
   };
 
   return (
-    <div className="flex flex-col border border-border/50 rounded-xl overflow-hidden bg-card/30 backdrop-blur-md shadow-lg shadow-black/20">
-      <div className="grid grid-cols-[1fr_1fr_40px] gap-px bg-slate-900 border-b border-border/50 text-xs font-bold text-white shadow-md">
-        <div className="p-3 pl-5 border-r border-white/10">Param Key</div>
-        <div className="p-3 border-r border-white/10">Param Value</div>
+    <div className="flex flex-col border border-border/50 rounded-none overflow-hidden bg-card/30 backdrop-blur-md shadow-lg shadow-black/20">
+      <div className="grid grid-cols-[1fr_1fr_40px] gap-px bg-slate-100 dark:bg-slate-900 border-b border-border/50 text-xs font-bold text-slate-600 dark:text-white shadow-sm">
+        <div className="p-3 pl-5 border-r border-border/50 dark:border-white/10">Param Key</div>
+        <div className="p-3 border-r border-border/50 dark:border-white/10">Param Value</div>
         <div className="p-3 text-center"></div>
       </div>
 
@@ -54,7 +54,7 @@ export function KeyValueEditor({ items, onChange }: KeyValueEditorProps) {
                 value={k}
                 onChange={(e) => updateKey(k, e.target.value, v)}
                 placeholder="Key"
-                className="w-full p-2.5 pl-4 text-[13px] bg-secondary/50 border border-border hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-foreground font-mono placeholder:text-muted-foreground/50"
+                className="w-full p-2.5 pl-4 text-[13px] bg-secondary/50 border border-border hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-none transition-all outline-none text-foreground font-mono placeholder:text-muted-foreground/50"
               />
             </div>
             <div className="relative group">
@@ -62,12 +62,12 @@ export function KeyValueEditor({ items, onChange }: KeyValueEditorProps) {
                 value={v}
                 onChange={(e) => updateValue(k, e.target.value)}
                 placeholder="Value"
-                className="w-full p-2.5 pl-4 text-[13px] bg-secondary/50 border border-border hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-foreground font-mono placeholder:text-muted-foreground/50"
+                className="w-full p-2.5 pl-4 text-[13px] bg-secondary/50 border border-border hover:border-primary/30 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-none transition-all outline-none text-foreground font-mono placeholder:text-muted-foreground/50"
               />
             </div>
             <button 
               onClick={() => removeRow(k)}
-              className="w-10 h-10 flex items-center justify-center bg-secondary/30 hover:bg-destructive/10 text-muted-foreground/60 hover:text-destructive transition-all rounded-xl border border-border hover:border-destructive/20"
+              className="w-10 h-10 flex items-center justify-center bg-secondary/30 hover:bg-destructive/10 text-muted-foreground/60 hover:text-destructive transition-all rounded-none border border-border hover:border-destructive/20"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -79,18 +79,18 @@ export function KeyValueEditor({ items, onChange }: KeyValueEditorProps) {
             value={newKey}
             onChange={(e) => setNewKey(e.target.value)}
             placeholder="New Key..."
-            className="w-full p-2.5 pl-4 text-[13px] bg-primary/5 border border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-primary font-mono placeholder:text-primary/40"
+            className="w-full p-2.5 pl-4 text-[13px] bg-primary/5 border border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-none transition-all outline-none text-primary font-mono placeholder:text-primary/40"
           />
           <input 
             value={newValue}
             onChange={(e) => setNewValue(e.target.value)}
             placeholder="New Value..."
-            className="w-full p-2.5 pl-4 text-[13px] bg-primary/5 border border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-xl transition-all outline-none text-primary font-mono placeholder:text-primary/40"
+            className="w-full p-2.5 pl-4 text-[13px] bg-primary/5 border border-primary/20 hover:border-primary/40 focus:border-primary focus:ring-2 focus:ring-primary/10 rounded-none transition-all outline-none text-primary font-mono placeholder:text-primary/40"
             onKeyDown={(e) => e.key === 'Enter' && handleAdd()}
           />
           <button 
             onClick={handleAdd}
-            className="w-10 h-10 flex items-center justify-center bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all rounded-xl border border-primary/20 shadow-sm"
+            className="w-10 h-10 flex items-center justify-center bg-primary/10 hover:bg-primary text-primary hover:text-white transition-all rounded-none border border-primary/20 shadow-sm"
           >
             <Plus className="w-4 h-4" />
           </button>

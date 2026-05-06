@@ -75,11 +75,11 @@ export function Sidebar() {
   return (
     <div className="w-[280px] h-full bg-card/40 backdrop-blur-3xl border-r border-border flex flex-col z-20 relative overflow-hidden">
       {/* Decorative gradient blur */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-none pointer-events-none" />
 
       <div className="h-16 px-6 border-b border-border/50 flex items-center justify-between shrink-0 relative z-10">
         <div className="font-bold text-[13px] text-primary/80 flex items-center gap-2.5">
-          <div className="w-5 h-5 bg-primary/10 rounded-md flex items-center justify-center border border-primary/20 shadow-[0_0_15px_rgba(0,174,239,0.1)]">
+          <div className="w-5 h-5 bg-primary/10 rounded-none flex items-center justify-center border border-primary/20 shadow-[0_0_15px_rgba(0,51,141,0.1)]">
             <LayoutGrid className="w-3 h-3 text-primary" />
           </div>
           <span>Collections</span>
@@ -106,7 +106,7 @@ export function Sidebar() {
             <div className="space-y-1 mt-2">
               {collections.map(col => (
                 <div key={col.id} className="text-sm group mb-2">
-                  <div className="px-3 py-2 flex items-center justify-between text-foreground font-semibold hover:bg-accent rounded-xl cursor-pointer transition-all border border-transparent hover:border-border">
+                  <div className="px-3 py-2 flex items-center justify-between text-foreground font-semibold hover:bg-accent rounded-none cursor-pointer transition-all border border-transparent hover:border-border">
                     <div className="flex items-center gap-2 flex-1">
                       <Folder className="w-4 h-4 text-primary/70" />
                       {editingColId === col.id ? (
@@ -116,7 +116,7 @@ export function Sidebar() {
                           onChange={e => setEditName(e.target.value)}
                           onBlur={() => saveEdit(col.id)}
                           onKeyDown={e => e.key === 'Enter' && saveEdit(col.id)}
-                          className="bg-background border border-primary/40 rounded-lg px-2 py-0.5 text-sm outline-none w-[140px] focus:ring-2 focus:ring-primary/10 transition-all"
+                          className="bg-background border border-primary/40 rounded-none px-2 py-0.5 text-sm outline-none w-[140px] focus:ring-2 focus:ring-primary/10 transition-all"
                         />
                       ) : (
                         <span className="truncate flex-1 max-w-[124px]">{col.name}</span>
@@ -142,7 +142,7 @@ export function Sidebar() {
                       <div
                         key={req.id}
                         onClick={() => setActiveIds(col.id, req.id)}
-                        className={`group/req px-3 py-2 flex items-center gap-3 rounded-xl cursor-pointer text-[13px] transition-all relative ${activeRequestId === req.id
+                        className={`group/req px-3 py-2 flex items-center gap-3 rounded-none cursor-pointer text-[13px] transition-all relative ${activeRequestId === req.id
                             ? 'bg-primary/10 text-primary font-bold border border-primary/20'
                             : 'text-muted-foreground hover:bg-accent hover:text-foreground border border-transparent'
                           }`}
@@ -158,7 +158,7 @@ export function Sidebar() {
                             onChange={e => setEditReqName(e.target.value)}
                             onBlur={() => saveReqEdit(req.id)}
                             onKeyDown={e => e.key === 'Enter' && saveReqEdit(req.id)}
-                            className="bg-background border border-primary/40 text-foreground rounded-lg px-2 py-0.5 text-xs outline-none w-[120px] focus:ring-2 focus:ring-primary/10 transition-all"
+                            className="bg-background border border-primary/40 text-foreground rounded-none px-2 py-0.5 text-xs outline-none w-[120px] focus:ring-2 focus:ring-primary/10 transition-all"
                           />
                         ) : (
                           <span className="truncate flex-1">{req.name}</span>
@@ -180,7 +180,7 @@ export function Sidebar() {
       </div>
 
       <div className="p-3 border-t border-border mt-auto">
-        <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground w-full p-2 rounded-md hover:bg-accent transition-colors">
+        <button className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground w-full p-2 rounded-none hover:bg-accent transition-colors">
           <Settings className="w-4 h-4" />
           <span>Settings</span>
         </button>

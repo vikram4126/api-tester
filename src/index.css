@@ -48,7 +48,7 @@
     --card-foreground: 222 47% 11%;
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
-    --primary: 196 100% 47%; /* KPMG Cyan */
+    --primary: 218 100% 28%; /* KPMG Deep Blue */
     --primary-foreground: 0 0% 100%;
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222 47.4% 11.2%;
@@ -60,8 +60,8 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 196 100% 47%;
-    --radius: 0.75rem;
+    --ring: 218 100% 28%;
+    --radius: 0rem;
   }
 
   .dark {
@@ -72,19 +72,19 @@
     --card-foreground: 210 40% 98%;
     --popover: 225 60% 8%;
     --popover-foreground: 210 40% 98%;
-    --primary: 196 100% 47%; /* #00aeef */
+    --primary: 218 100% 45%; /* Lighter version for dark mode visibility */
     --primary-foreground: 0 0% 100%;
     --secondary: 222 39% 15%; 
     --secondary-foreground: 210 40% 98%;
     --muted: 222 39% 15%;
     --muted-foreground: 215 20% 65%;
-    --accent: 196 100% 20%;
-    --accent-foreground: 196 100% 90%;
+    --accent: 218 100% 20%;
+    --accent-foreground: 218 100% 90%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 196 100% 47%;
+    --ring: 218 100% 45%;
   }
 
 }

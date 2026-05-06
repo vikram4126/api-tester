@@ -39,15 +39,15 @@ export function SnippetGenerator() {
   const snippet = getSnippet();
 
   return (
-    <div className="flex flex-col h-full bg-card/30 backdrop-blur-md rounded-xl border border-border/50 overflow-hidden p-3 shadow-lg shadow-black/20">
-      <div className="flex items-center gap-3 mb-3 p-2 bg-muted rounded-xl border border-border">
+    <div className="flex flex-col h-full bg-card/30 backdrop-blur-md rounded-none border border-border/50 overflow-hidden p-3 shadow-lg shadow-black/20">
+      <div className="flex items-center gap-3 mb-3 p-2 bg-muted rounded-none border border-border">
         {['cURL', 'Fetch', 'Python Requests'].map(l => (
           <button 
            key={l} 
            onClick={() => setLang(l)} 
-           className={`px-4 py-2 text-[11px] font-bold rounded-lg transition-all ${
+           className={`px-4 py-2 text-[11px] font-bold rounded-none transition-all ${
              lang === l 
-               ? 'bg-primary text-white shadow-[0_0_15px_rgba(0,174,239,0.3)]' 
+               ? 'bg-primary text-white shadow-[0_0_15px_rgba(0,51,141,0.3)]' 
                : 'text-muted-foreground/60 hover:bg-accent hover:text-foreground'
            }`}
           >
@@ -55,7 +55,7 @@ export function SnippetGenerator() {
           </button>
         ))}
       </div>
-      <div className="flex-1 relative border border-border/50 rounded-xl overflow-hidden shadow-inner">
+      <div className="flex-1 relative border border-border/50 rounded-none overflow-hidden shadow-inner">
         <CodeEditor value={snippet} language={lang === 'cURL' ? 'shell' : lang === 'Fetch' ? 'javascript' : 'python'} readOnly />
       </div>
     </div>

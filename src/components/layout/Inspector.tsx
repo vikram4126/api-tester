@@ -18,7 +18,7 @@ export function Inspector() {
   if (isFetching) {
     return (
       <div className="w-[450px] min-w-[300px] h-full bg-card border-l border-border flex flex-col items-center justify-center text-muted-foreground">
-        <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full mb-4"></div>
+        <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-none mb-4"></div>
         <p className="text-sm">Sending Request...</p>
       </div>
     );
@@ -49,7 +49,7 @@ export function Inspector() {
     <div className="w-[450px] h-full border-l border-border/50 bg-card/40 backdrop-blur-3xl flex flex-col z-20 relative overflow-hidden">
 
       {/* Decorative gradient blur */}
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-full pointer-events-none" />
+      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/5 blur-[100px] rounded-none pointer-events-none" />
       
 
       <div className="p-8 border-b border-border/50 flex flex-col gap-6 bg-card/30 relative z-10">
@@ -82,12 +82,12 @@ export function Inspector() {
 
       
       {/* Response Tabs */}
-      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-slate-900 text-xs font-bold relative z-10 shadow-inner">
-        <button className="py-4 px-1 border-b-2 border-primary text-white relative">
+      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-secondary/10 dark:bg-slate-900 text-xs font-bold relative z-10 shadow-inner transition-colors">
+        <button className="py-4 px-1 border-b-2 border-primary text-primary dark:text-white relative">
           Body
-          <div className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,174,239,0.8)] rounded-full" />
+          <div className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,51,141,0.8)] rounded-none" />
         </button>
-        <button className="py-4 px-1 border-b-2 border-transparent text-white/50 hover:text-white">Headers ({Object.keys(data.headers || {}).length})</button>
+        <button className="py-4 px-1 border-b-2 border-transparent text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white">Headers ({Object.keys(data.headers || {}).length})</button>
       </div>
 
 

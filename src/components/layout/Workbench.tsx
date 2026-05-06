@@ -51,9 +51,9 @@ export function Workbench() {
     <div className="flex flex-col h-full bg-background relative overflow-hidden">
       {/* URL BAR */}
       <div className="flex items-center gap-4 p-6 border-b border-border/50 bg-card/10 backdrop-blur-md z-10">
-        <div className="flex-1 flex items-center gap-0 bg-secondary/30 rounded-xl border border-border/50 focus-within:border-primary/40 focus-within:ring-4 focus-within:ring-primary/10 transition-all overflow-hidden group shadow-inner">
+        <div className="flex-1 flex items-center gap-0 bg-secondary/30 rounded-none border border-border/50 focus-within:border-primary/40 focus-within:ring-0 transition-all overflow-hidden group shadow-inner h-[42px]">
           <select 
-            className="bg-transparent text-primary text-sm font-bold rounded-none px-5 py-3 focus:outline-none cursor-pointer hover:bg-accent transition-all border-r border-border/50"
+            className="bg-transparent text-primary text-sm font-bold rounded-none px-5 h-full focus:outline-none cursor-pointer hover:bg-accent transition-all border-r border-border/50"
             value={request.method}
             onChange={(e) => updateMethod(e.target.value)}
           >
@@ -66,46 +66,50 @@ export function Workbench() {
           <input 
             type="text" 
             placeholder="https://api.example.com/v1/users"
-            className="flex-1 bg-transparent px-4 py-3 text-sm focus:outline-none text-foreground font-mono placeholder:text-muted-foreground/50 selection:bg-primary/30"
+            className="flex-1 bg-transparent px-4 h-full text-sm focus:outline-none text-foreground font-mono placeholder:text-muted-foreground/50 selection:bg-primary/30"
             value={request.url}
             onChange={(e) => updateUrl(e.target.value)}
           />
         </div>
         <motion.button 
-          whileHover={{ scale: 1.02, translateY: -1 }}
+          whileHover={{ translateY: -1 }}
           whileTap={{ scale: 0.98, translateY: 0 }}
           onClick={handleSend}
           disabled={isFetching}
-          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold w-[180px] py-3 rounded-xl flex items-center justify-center gap-3 text-sm transition-all shadow-xl shadow-primary/20 disabled:opacity-50 h-[46px] border border-primary/20 shrink-0"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground font-bold w-[110px] h-[42px] rounded-none flex items-center justify-center transition-all shadow-xl shadow-primary/20 disabled:opacity-70 disabled:cursor-not-allowed border border-primary/20 shrink-0"
         >
-          {isFetching ? (
-            <div className="animate-spin w-3.5 h-3.5 border-2 border-primary-foreground border-t-transparent rounded-full" />
-          ) : (
-            <Play className="w-3.5 h-3.5 fill-current" />
-          )}
-          <span>{isFetching ? 'Sending...' : 'Send Request'}</span>
+          <div className="flex items-center gap-2">
+            <div className="w-3.5 h-3.5 flex items-center justify-center relative">
+              {isFetching ? (
+                <div className="animate-spin w-3 h-3 border-2 border-primary-foreground border-t-transparent rounded-full" />
+              ) : (
+                <Play className="w-3 h-3 fill-current" />
+              )}
+            </div>
+            <span className="text-[13px] leading-none">Send</span>
+          </div>
         </motion.button>
 
       </div>
 
 
       {/* TABS */}
-      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-slate-900 text-xs font-bold overflow-x-auto no-scrollbar shadow-inner">
+      <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-secondary/10 dark:bg-slate-900 text-xs font-bold overflow-x-auto no-scrollbar shadow-inner transition-colors">
         {(['params', 'headers', 'auth', 'body', 'snippets'] as const).map(tab => (
           <button 
             key={tab}
             onClick={() => setActiveTab(tab)}
             className={`py-4 px-1 border-b-2 transition-all relative whitespace-nowrap ${
               activeTab === tab 
-                ? 'border-primary text-white' 
-                : 'border-transparent text-white/50 hover:text-white'
+                ? 'border-primary text-primary dark:text-white' 
+                : 'border-transparent text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white'
             }`}
           >
             {tab}
             {activeTab === tab && (
               <motion.div 
                 layoutId="activeTab"
-                className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,174,239,0.8)] rounded-full"
+                className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,51,141,0.8)] rounded-none"
               />
             )}
           </button>
@@ -116,7 +120,7 @@ export function Workbench() {
       {/* Content Area */}
       <div className="flex-1 overflow-auto p-4 flex flex-col z-0">
         {activeTab === 'body' && (
-          <div className="flex-1 border border-border rounded-md overflow-hidden bg-card flex flex-col shadow-sm">
+          <div className="flex-1 border border-border rounded-none overflow-hidden bg-card flex flex-col shadow-sm">
             <div className="p-2 border-b border-border bg-muted/30 flex items-center">
               <select 
                 className="bg-transparent text-xs text-foreground focus:outline-none font-medium cursor-pointer border border-border rounded px-2 py-1"

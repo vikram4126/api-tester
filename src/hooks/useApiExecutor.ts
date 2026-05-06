@@ -4,7 +4,7 @@ import { injectVariables } from '@/lib/parser';
 import { db, type RequestItem, type Environment } from '@/lib/db';
 import { useLiveQuery } from 'dexie-react-hooks';
 
-const PROXY_URL = (import.meta.env.VITE_PROXY_URL || 'http://localhost:4000') + '/proxy?url=';
+const PROXY_URL = (import.meta.env.VITE_PROXY_URL || '') + '/proxy?url=';
 
 export function useApiExecutor() {
   const activeRequestId = useAppStore(state => state.activeRequestId);

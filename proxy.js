@@ -1,6 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -36,7 +41,15 @@ app.use('/proxy', (req, res, next) => {
   return proxy(req, res, next);
 });
 
+// Serve static files from the dist directory
+app.use(express.static(path.join(__dirname, 'dist')));
+
+// Catch-all route to serve index.html for any other request (SPA support)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+});
+
 app.listen(PORT, () => {
-    console.log(`Smart Request Gateway Proxy Proxying on http://localhost:${PORT}`);
-    console.log(`Send requests using GET /proxy?url=YOUR_URL_HERE`);
+    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`API Proxy available at http://localhost:${PORT}/proxy`);
 });

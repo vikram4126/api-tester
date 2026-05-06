@@ -1,3 +1,39 @@
+/* ─── Open Sans — Local Fonts ─── */
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Regular-normal.woff2') format('woff2'),
+       url('/fonts/OpenSans-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-SemiBold-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  src: url('/fonts/OpenSans-Bold-normal.woff2') format('woff2'),
+       url('/fonts/OpenSans-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Open Sans Condensed';
+  src: url('/fonts/OpenSans_Condensed-Bold-normal.woff2') format('woff2'),
+       url('/fonts/OpenSans-CondBold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;

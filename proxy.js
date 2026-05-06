@@ -1,6 +1,5 @@
 import express from 'express';
 import cors from 'cors';
-import { createProxyMiddleware } from 'http-proxy-middleware';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -11,78 +10,65 @@ const app = express();
 const PORT = process.env.PORT || 4000;
 
 app.use(cors());
+app.use(express.json());
 
-// Logging middleware to help debug connectivity issues
 app.use((req, res, next) => {
   if (req.url.startsWith('/proxy')) {
-    console.log(`[${new Date().toISOString()}] Proxy Request: ${req.method} ${req.url}`);
+    console.log(`\n--- [${new Date().toLocaleTimeString()}] Proxying ${req.method} to ${req.query.url} ---`);
   }
   next();
 });
 
-// A simple proxy route
-app.use('/proxy', (req, res, next) => {
-  let targetUrl = req.query.url;
-  
-  if (!targetUrl) {
-    return res.status(400).json({ error: 'Missing targetUrl parameter (?url=https://api.example.com)' });
-  }
+app.all('/proxy', async (req, res) => {
+  const targetUrl = req.query.url;
 
-  // Ensure the target URL has a protocol
-  if (!targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
-    // Check if it looks like a domain or localhost
-    if (targetUrl.includes('.') || targetUrl.startsWith('localhost')) {
-        targetUrl = 'https://' + targetUrl;
-        console.log(`Auto-prefixed protocol: ${targetUrl}`);
-    } else {
-        return res.status(400).json({ error: 'Invalid target URL. Must start with http:// or https://' });
-    }
+  if (!targetUrl) {
+    return res.status(400).json({ error: 'Missing URL parameter' });
   }
 
   try {
-    const urlObj = new URL(targetUrl);
+    const headers = { ...req.headers };
     
-    const proxy = createProxyMiddleware({
-      target: urlObj.origin,
-      changeOrigin: true,
-      pathRewrite: (path, req) => {
-        // Return the full path including search params from the targetUrl
-        return urlObj.pathname + urlObj.search;
-      },
-      onProxyRes: (proxyRes, req, res) => {
-        proxyRes.headers['Access-Control-Allow-Origin'] = '*';
-        proxyRes.headers['Access-Control-Allow-Methods'] = '*';
-        proxyRes.headers['Access-Control-Allow-Headers'] = '*';
-      },
-      onError: (err, req, res) => {
-        console.error('Proxy Error:', err.message);
-        res.writeHead(500, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ 
-          error: 'Proxy Error', 
-          message: err.message,
-          target: targetUrl 
-        }));
-      }
+    // Remove problematic headers
+    delete headers.host;
+    delete headers.connection;
+    delete headers['content-length'];
+    
+    // Remove headers often injected by corporate proxies that can break targets
+    const junkHeaders = ['via', 'x-forwarded-for', 'x-forwarded-proto', 'x-forwarded-port', 'x-amzn-trace-id'];
+    junkHeaders.forEach(h => delete headers[h]);
+
+    const response = await fetch(targetUrl, {
+      method: req.method,
+      headers: headers,
+      body: ['GET', 'HEAD'].includes(req.method) ? undefined : JSON.stringify(req.body),
     });
 
-    return proxy(req, res, next);
-  } catch (e) {
-    console.error('URL Parsing Error:', e.message);
-    return res.status(400).json({ error: 'Invalid target URL format', details: e.message });
+    const data = await response.text();
+    
+    // Ensure CORS
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', '*');
+    res.setHeader('Access-Control-Allow-Headers', '*');
+
+    res.status(response.status).send(data);
+    console.log(`Success: ${response.status} ${response.statusText}`);
+
+  } catch (error) {
+    console.error('!!! PROXY FETCH FAILED:', error.code, error.message);
+    res.status(500).json({
+      error: 'Proxy Connection Failed',
+      message: error.message,
+      code: error.code,
+      hint: 'If you are on an office laptop, Node.js might be blocked by the corporate firewall/proxy.'
+    });
   }
 });
 
-// Serve static files from the dist directory
 app.use(express.static(path.join(__dirname, 'dist')));
+app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'dist', 'index.html')));
 
-// Catch-all route to serve index.html for any other request (SPA support)
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
-});
-
-// Listen on all interfaces (0.0.0.0) so it's accessible over the network
 app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running at http://0.0.0.0:${PORT}`);
-    console.log(`API Proxy available at http://0.0.0.0:${PORT}/proxy`);
+  console.log(`Api Ninja Pro Server: http://0.0.0.0:${PORT}`);
 });
 

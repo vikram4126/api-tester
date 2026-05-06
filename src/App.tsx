@@ -33,7 +33,7 @@ function App() {
 
               <div className="w-px h-6 bg-border/50 mx-2 hidden sm:block"></div>
               <span className="text-[12px] font-bold text-slate-800 dark:text-white hidden sm:block transition-colors">
-                API Tester <span className="text-primary dark:text-white/80">v.0</span>
+                Api Ninja pro <span className="text-primary dark:text-white/80">v.1.0</span>
               </span>
             </div>
           </div>

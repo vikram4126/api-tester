@@ -122,7 +122,7 @@ export function Workbench() {
                 className="bg-transparent text-xs text-foreground focus:outline-none font-medium cursor-pointer border border-border rounded px-2 py-1"
                 value={request.body.type}
                 onChange={(e) => {
-                  if (activeRequestId) db.requests.update(activeRequestId, { body: { ...request.body, type: e.target.value as any } });
+                  if (activeRequestId) db.requests.update(activeRequestId, { body: { ...request.body, type: e.target.value as 'none' | 'json' | 'raw' } });
                 }}
               >
                 <option value="none">None</option>

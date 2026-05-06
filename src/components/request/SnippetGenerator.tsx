@@ -28,10 +28,11 @@ export function SnippetGenerator() {
         return `import requests\n\nurl = "${url}"\nheaders = ${JSON.stringify(request.headers, null, 2)}\n\nresponse = requests.request("${method}", url, headers=headers${bodyStr ? `, data=${bodyStr}` : ''})\n\nprint(response.text)`;
       case 'cURL':
       default:
-        let curl = `curl --request ${method} \\\n  --url ${url}`;
+      {        let curl = `curl --request ${method} \\\n  --url ${url}`;
         if (headers) curl += ` \\\n  ${headers}`;
         if (bodyStr) curl += ` \\\n  --data '${bodyStr}'`;
         return curl;
+        }
     }
   };
 

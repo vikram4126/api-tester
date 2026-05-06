@@ -39,7 +39,7 @@ export function useApiExecutor() {
             }
           });
           injectedUrl = urlObj.toString();
-        } catch(e) { /* ignore invalid url */ }
+        } catch { /* ignore invalid url */ }
       }
       
       const targetUrl = PROXY_URL + encodeURIComponent(injectedUrl);
@@ -80,10 +80,10 @@ export function useApiExecutor() {
       const blob = await res.blob();
       const size = blob.size;
       const text = await blob.text();
-      let data: any = text;
+      let data: unknown = text;
       try {
-        data = JSON.parse(text);
-      } catch (e) {
+        data = JSON.parse(text) as unknown;
+      } catch {
         // keep as text
       }
 

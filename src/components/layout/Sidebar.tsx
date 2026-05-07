@@ -1,5 +1,5 @@
 import { useAppStore } from '@/store/useAppStore';
-import { Plus, Folder, LayoutGrid, Settings, Edit2 } from 'lucide-react';
+import { Plus, Folder, LayoutGrid, Settings, Edit2, Trash2 } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/lib/db';
 import { useState } from 'react';
@@ -7,7 +7,7 @@ import { useState } from 'react';
 export function Sidebar() {
   const theme = useAppStore(state => state.theme);
   const toggleTheme = useAppStore(state => state.toggleTheme);
-  const { activeRequestId, setActiveIds } = useAppStore(state => state);
+  const { activeRequestId, activeCollectionId, setActiveIds } = useAppStore(state => state);
 
   const collections = useLiveQuery(() => db.collections.toArray()) || [];
   const requests = useLiveQuery(() => db.requests.toArray()) || [];
@@ -72,6 +72,28 @@ export function Sidebar() {
     setEditingReqId(null);
   };
 
+  const handleDeleteCollection = async (e: React.MouseEvent, colId: string) => {
+    e.stopPropagation();
+    if (confirm('Are you sure you want to delete this collection and all its requests?')) {
+      await db.collections.delete(colId);
+      const reqsToDelete = requests.filter(r => r.collectionId === colId).map(r => r.id);
+      await db.requests.bulkDelete(reqsToDelete);
+      if (activeCollectionId === colId) {
+        setActiveIds(null, null);
+      }
+    }
+  };
+
+  const handleDeleteRequest = async (e: React.MouseEvent, reqId: string) => {
+    e.stopPropagation();
+    if (confirm('Are you sure you want to delete this request?')) {
+      await db.requests.delete(reqId);
+      if (activeRequestId === reqId) {
+        setActiveIds(activeCollectionId, null);
+      }
+    }
+  };
+
   return (
     <div className="w-[280px] h-full bg-card/40 backdrop-blur-3xl border-r border-border flex flex-col z-20 relative overflow-hidden">
       {/* Decorative gradient blur */}
@@ -126,12 +148,21 @@ export function Sidebar() {
                       <button
                         onClick={(e) => { e.stopPropagation(); setEditingColId(col.id); setEditName(col.name); }}
                         className="p-1 hover:bg-background rounded text-muted-foreground hover:text-foreground"
+                        title="Edit Collection"
                       >
                         <Edit2 className="w-3 h-3" />
                       </button>
                       <button
+                        onClick={(e) => handleDeleteCollection(e, col.id)}
+                        className="p-1 hover:bg-background rounded text-muted-foreground hover:text-destructive"
+                        title="Delete Collection"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                      <button
                         onClick={(e) => handleAddRequest(e, col.id)}
                         className="p-1 hover:bg-background rounded text-muted-foreground hover:text-foreground"
+                        title="Add Request"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -163,12 +194,22 @@ export function Sidebar() {
                         ) : (
                           <span className="truncate flex-1">{req.name}</span>
                         )}
-                        <button
-                          onClick={(e) => { e.stopPropagation(); setEditingReqId(req.id); setEditReqName(req.name); }}
-                          className="opacity-0 group-hover/req:opacity-100 p-0.5 hover:text-foreground transition-opacity text-muted-foreground"
-                        >
-                          <Edit2 className="w-3 h-3" />
-                        </button>
+                        <div className="opacity-0 group-hover/req:opacity-100 flex items-center gap-1 transition-opacity">
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setEditingReqId(req.id); setEditReqName(req.name); }}
+                            className="p-0.5 hover:text-foreground text-muted-foreground"
+                            title="Edit Request"
+                          >
+                            <Edit2 className="w-3 h-3" />
+                          </button>
+                          <button
+                            onClick={(e) => handleDeleteRequest(e, req.id)}
+                            className="p-0.5 hover:text-destructive text-muted-foreground"
+                            title="Delete Request"
+                          >
+                            <Trash2 className="w-3 h-3" />
+                          </button>
+                        </div>
                       </div>
                     ))}
                   </div>

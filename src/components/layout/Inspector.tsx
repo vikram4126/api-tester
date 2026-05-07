@@ -1,4 +1,5 @@
 import { Copy, Clock, Database } from 'lucide-react';
+import { useState } from 'react';
 import { useAppStore } from '@/store/useAppStore';
 import { useApiExecutor } from '@/hooks/useApiExecutor';
 import { CodeEditor } from '@/components/ui/CodeEditor';
@@ -6,6 +7,7 @@ import { CodeEditor } from '@/components/ui/CodeEditor';
 export function Inspector() {
   const activeRequestId = useAppStore(state => state.activeRequestId);
   const { data, isFetching, error } = useApiExecutor();
+  const [activeTab, setActiveTab] = useState<'body' | 'headers'>('body');
 
   if (!activeRequestId) {
     return (
@@ -43,6 +45,7 @@ export function Inspector() {
 
   const isJSON = typeof data.data === 'object';
   const valString = isJSON ? JSON.stringify(data.data, null, 2) : String(data.data);
+  const headersString = data.headers ? JSON.stringify(data.headers, null, 2) : '{}';
   const isOk = data.status >= 200 && data.status < 300;
 
   return (
@@ -83,23 +86,30 @@ export function Inspector() {
       
       {/* Response Tabs */}
       <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-secondary/10 dark:bg-slate-900 text-xs font-bold relative z-10 shadow-inner transition-colors">
-        <button className="py-4 px-1 border-b-2 border-primary text-primary dark:text-white relative">
+        <button 
+          onClick={() => setActiveTab('body')}
+          className={`py-4 px-1 border-b-2 ${activeTab === 'body' ? 'border-primary text-primary dark:text-white relative' : 'border-transparent text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white'}`}>
           Body
-          <div className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,51,141,0.8)] rounded-none" />
+          {activeTab === 'body' && <div className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,51,141,0.8)] rounded-none" />}
         </button>
-        <button className="py-4 px-1 border-b-2 border-transparent text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white">Headers ({Object.keys(data.headers || {}).length})</button>
+        <button 
+          onClick={() => setActiveTab('headers')}
+          className={`py-4 px-1 border-b-2 ${activeTab === 'headers' ? 'border-primary text-primary dark:text-white relative' : 'border-transparent text-muted-foreground dark:text-white/50 hover:text-foreground dark:hover:text-white'}`}>
+          Headers ({Object.keys(data.headers || {}).length})
+          {activeTab === 'headers' && <div className="absolute bottom-[-2px] left-0 right-0 h-[2px] bg-primary shadow-[0_0_12px_rgba(0,51,141,0.8)] rounded-none" />}
+        </button>
       </div>
 
 
       <div className="p-3 border-b border-border/50 bg-muted/20 flex items-center justify-between relative z-10 px-6">
         <div className="flex items-center gap-2">
           <div className="w-2 h-2 rounded-full bg-primary/40" />
-          <span className="text-[11px] font-bold text-muted-foreground/60">{isJSON ? 'JSON Output' : 'Plain Text'}</span>
+          <span className="text-[11px] font-bold text-muted-foreground/60">{activeTab === 'body' ? (isJSON ? 'JSON Output' : 'Plain Text') : 'Headers'}</span>
         </div>
         <button 
           className="text-muted-foreground hover:text-primary p-2 rounded-lg hover:bg-primary/10 transition-all border border-transparent hover:border-primary/20 shadow-sm hover:shadow-primary/10" 
           title="Copy to clipboard" 
-          onClick={() => navigator.clipboard.writeText(valString)}
+          onClick={() => navigator.clipboard.writeText(activeTab === 'body' ? valString : headersString)}
         >
           <Copy className="w-3.5 h-3.5" />
         </button>
@@ -107,7 +117,11 @@ export function Inspector() {
 
 
       <div className="flex-1 overflow-hidden relative">
-         <CodeEditor value={valString} language={isJSON ? 'json' : 'plaintext'} readOnly={true} />
+         <CodeEditor 
+            value={activeTab === 'body' ? valString : headersString} 
+            language={activeTab === 'body' ? (isJSON ? 'json' : 'plaintext') : 'json'} 
+            readOnly={true} 
+         />
       </div>
     </div>
   );

@@ -3,6 +3,11 @@ import { Plus, Folder, LayoutGrid, Settings, Edit2, Trash2 } from 'lucide-react'
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/lib/db';
 import { useState } from 'react';
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+import { toast } from 'sonner';
+
+const MySwal = withReactContent(Swal);
 
 export function Sidebar() {
   const theme = useAppStore(state => state.theme);
@@ -74,23 +79,51 @@ export function Sidebar() {
 
   const handleDeleteCollection = async (e: React.MouseEvent, colId: string) => {
     e.stopPropagation();
-    if (confirm('Are you sure you want to delete this collection and all its requests?')) {
+    
+    const result = await MySwal.fire({
+      title: 'Delete Collection?',
+      text: "This will also delete all requests inside this collection.",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it',
+      background: theme === 'dark' ? '#1e293b' : '#ffffff',
+      color: theme === 'dark' ? '#f8fafc' : '#0f172a'
+    });
+
+    if (result.isConfirmed) {
       await db.collections.delete(colId);
       const reqsToDelete = requests.filter(r => r.collectionId === colId).map(r => r.id);
       await db.requests.bulkDelete(reqsToDelete);
       if (activeCollectionId === colId) {
         setActiveIds(null, null);
       }
+      toast.success('Collection deleted successfully');
     }
   };
 
   const handleDeleteRequest = async (e: React.MouseEvent, reqId: string) => {
     e.stopPropagation();
-    if (confirm('Are you sure you want to delete this request?')) {
+    
+    const result = await MySwal.fire({
+      title: 'Delete Request?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#ef4444',
+      cancelButtonColor: '#64748b',
+      confirmButtonText: 'Yes, delete it',
+      background: theme === 'dark' ? '#1e293b' : '#ffffff',
+      color: theme === 'dark' ? '#f8fafc' : '#0f172a'
+    });
+
+    if (result.isConfirmed) {
       await db.requests.delete(reqId);
       if (activeRequestId === reqId) {
         setActiveIds(activeCollectionId, null);
       }
+      toast.success('Request deleted successfully');
     }
   };
 

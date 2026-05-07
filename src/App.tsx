@@ -4,6 +4,7 @@ import { Workbench } from './components/layout/Workbench';
 import { Inspector } from './components/layout/Inspector';
 import { EnvironmentManager } from './components/workspace/EnvironmentManager';
 import { useEffect } from 'react';
+import { Toaster } from 'sonner';
 
 function App() {
   const theme = useAppStore(state => state.theme);
@@ -18,6 +19,7 @@ function App() {
 
   return (
     <div className="flex h-screen w-full bg-background text-foreground overflow-hidden font-sans">
+      <Toaster position="bottom-right" />
       {/* 3-column "IDE" layout as per Stitch */}
       <Sidebar />
       <div className="flex flex-1 flex-col border-r border-border min-w-0">

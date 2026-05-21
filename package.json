@@ -11,7 +11,8 @@
     "build": "tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "start": "node proxy.js"
+    "start": "node proxy.js",
+    "start:office": "cross-env IGNORE_SSL_ERRORS=true node proxy.js"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.6.0",

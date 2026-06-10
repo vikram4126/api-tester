@@ -1,5 +1,5 @@
 import { useAppStore } from '@/store/useAppStore';
-import { Plus, Folder, LayoutGrid, Settings, Edit2, Trash2 } from 'lucide-react';
+import { Plus, Folder, LayoutGrid, Settings, Edit2, Trash2, Upload, Download, Database } from 'lucide-react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '@/lib/db';
 import { useState } from 'react';
@@ -61,6 +61,85 @@ export function Sidebar() {
       body: { type: 'none', content: '' }
     });
     setActiveIds(colId, reqId);
+  };
+
+  const handleExportCollection = async (e: React.MouseEvent, colId: string) => {
+    e.stopPropagation();
+    const col = collections.find(c => c.id === colId);
+    if (!col) return;
+    const reqs = requests.filter(r => r.collectionId === colId);
+    const data = { collection: col, requests: reqs };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${col.name.replace(/\s+/g, '_')}_export.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.success('Collection exported');
+  };
+
+  const handleImportCollection = () => {
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'application/json';
+    input.onchange = async (e) => {
+      const file = (e.target as HTMLInputElement).files?.[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        try {
+          const data = JSON.parse(e.target?.result as string);
+          if (!data.collection || !data.requests) throw new Error('Invalid format');
+          
+          const newColId = crypto.randomUUID();
+          await db.collections.add({
+            ...data.collection,
+            id: newColId,
+            workspaceId: 'default',
+          });
+
+          const newReqs = data.requests.map((r: any) => ({
+            ...r,
+            id: crypto.randomUUID(),
+            collectionId: newColId
+          }));
+          await db.requests.bulkAdd(newReqs);
+          toast.success('Collection imported successfully');
+        } catch (err) {
+          toast.error('Failed to parse collection file');
+        }
+      };
+      reader.readAsText(file);
+    };
+    input.click();
+  };
+
+  const handleLoadDummyData = async () => {
+    const colId = crypto.randomUUID();
+    await db.collections.add({
+      id: colId,
+      workspaceId: 'default',
+      parentId: null,
+      name: 'JSONPlaceholder API'
+    });
+
+    const reqs = [
+      {
+        id: crypto.randomUUID(), collectionId: colId, name: 'Get Posts', method: 'GET',
+        url: 'https://jsonplaceholder.typicode.com/posts', headers: {}, params: {}, body: { type: 'none', content: '' } as any
+      },
+      {
+        id: crypto.randomUUID(), collectionId: colId, name: 'Create Post', method: 'POST',
+        url: 'https://jsonplaceholder.typicode.com/posts', headers: {'Content-type': 'application/json; charset=UTF-8'}, params: {}, body: { type: 'json', content: '{\n  "title": "foo",\n  "body": "bar",\n  "userId": 1\n}' } as any
+      },
+      {
+        id: crypto.randomUUID(), collectionId: colId, name: 'Get User', method: 'GET',
+        url: 'https://jsonplaceholder.typicode.com/users/1', headers: {}, params: {}, body: { type: 'none', content: '' } as any
+      }
+    ];
+    await db.requests.bulkAdd(reqs);
+    toast.success('Dummy collection added');
   };
 
   const saveEdit = async (colId: string) => {
@@ -148,14 +227,21 @@ export function Sidebar() {
         <div>
           <div className="text-[11px] font-bold text-muted-foreground/60 mb-3 px-3 flex items-center justify-between">
             <span>Library</span>
-            <button onClick={handleCreateCollection} className="hover:text-primary transition-colors"><Plus className="w-3 h-3" /></button>
+            <div className="flex gap-2">
+              <button onClick={handleImportCollection} className="hover:text-primary transition-colors" title="Import Collection"><Upload className="w-3.5 h-3.5" /></button>
+              <button onClick={handleCreateCollection} className="hover:text-primary transition-colors" title="Create Collection"><Plus className="w-3.5 h-3.5" /></button>
+            </div>
           </div>
 
           {collections.length === 0 ? (
             <div className="p-4 text-center text-sm text-muted-foreground mt-10">
               <Folder className="w-8 h-8 mx-auto mb-2 opacity-20" />
               <p>No collections yet</p>
-              <button onClick={handleCreateCollection} className="mt-4 text-primary text-xs hover:underline">Create Collection</button>
+              <div className="flex flex-col gap-2 mt-4 items-center">
+                <button onClick={handleCreateCollection} className="text-primary text-xs hover:underline flex items-center gap-1.5"><Plus className="w-3 h-3" /> Create Collection</button>
+                <button onClick={handleImportCollection} className="text-primary text-xs hover:underline flex items-center gap-1.5"><Upload className="w-3 h-3" /> Import Collection</button>
+                <button onClick={handleLoadDummyData} className="text-primary text-xs hover:underline flex items-center gap-1.5"><Database className="w-3 h-3" /> Load Dummy Data</button>
+              </div>
             </div>
           ) : (
             <div className="space-y-1 mt-2">
@@ -178,6 +264,13 @@ export function Sidebar() {
                       )}
                     </div>
                     <div className="opacity-0 group-hover:opacity-100 flex items-center gap-1 transition-opacity">
+                      <button
+                        onClick={(e) => handleExportCollection(e, col.id)}
+                        className="p-1 hover:bg-background rounded text-muted-foreground hover:text-foreground"
+                        title="Export Collection"
+                      >
+                        <Download className="w-3 h-3" />
+                      </button>
                       <button
                         onClick={(e) => { e.stopPropagation(); setEditingColId(col.id); setEditName(col.name); }}
                         className="p-1 hover:bg-background rounded text-muted-foreground hover:text-foreground"

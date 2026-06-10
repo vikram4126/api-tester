@@ -1,25 +1,46 @@
 import { Play } from 'lucide-react';
 import { useAppStore } from '@/store/useAppStore';
 import { useLiveQuery } from 'dexie-react-hooks';
-import { db, type RequestItem } from '@/lib/db';
+import { db, type RequestItem, type Environment } from '@/lib/db';
 import { useApiExecutor } from '@/hooks/useApiExecutor';
 import { CodeEditor } from '@/components/ui/CodeEditor';
 import { SnippetGenerator } from '@/components/request/SnippetGenerator';
 import { KeyValueEditor } from '@/components/request/KeyValueEditor';
 import { AuthEditor } from '@/components/request/AuthEditor';
+import { injectVariables } from '@/lib/parser';
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 
 export function Workbench() {
   const activeRequestId = useAppStore(state => state.activeRequestId);
+  const activeEnvId = useAppStore(state => state.activeEnvId);
   
   const request = useLiveQuery(
     async () => activeRequestId ? await db.requests.get(activeRequestId) : null,
     [activeRequestId]
   ) as RequestItem | undefined | null;
-  
+
+  const environment = useLiveQuery(
+    async () => activeEnvId ? await db.environments.get(activeEnvId) : null,
+    [activeEnvId]
+  ) as Environment | undefined | null;
+
   const [activeTab, setActiveTab] = useState<'params'|'headers'|'auth'|'body'|'snippets'>('params');
   const { refetch, isFetching } = useApiExecutor();
+
+  // Compute resolved URL for preview
+  let rawUrl = request?.url?.trim() || '';
+  const isAutoPrepend = rawUrl.startsWith('/') && environment?.variables['base_url'];
+  
+  if (isAutoPrepend) {
+    const base = environment.variables['base_url'].replace(/\/$/, '');
+    rawUrl = `${base}${rawUrl}`;
+  }
+
+  const hasTemplateVars = rawUrl.includes('{{');
+  const resolvedUrl = (hasTemplateVars || isAutoPrepend) && environment
+    ? injectVariables(rawUrl, environment.variables)
+    : null;
 
   const handleSend = () => {
     if (activeRequestId) refetch();
@@ -65,8 +86,8 @@ export function Workbench() {
           </select>
           <input 
             type="text" 
-            placeholder="https://api.example.com/v1/users"
-            className="flex-1 bg-transparent px-4 h-full text-sm focus:outline-none text-foreground font-mono placeholder:text-muted-foreground/50 selection:bg-primary/30"
+            placeholder="https://api.example.com/v1/users  or just  /users"
+            className="flex-1 bg-transparent px-4 h-full text-sm focus:outline-none text-foreground font-mono placeholder:text-muted-foreground/40 selection:bg-primary/30"
             value={request.url}
             onChange={(e) => updateUrl(e.target.value)}
           />
@@ -92,6 +113,19 @@ export function Workbench() {
 
       </div>
 
+      {/* Resolved URL preview strip */}
+      {hasTemplateVars && !environment && (
+        <div className="flex items-center gap-2 px-6 py-1.5 bg-amber-500/10 border-b border-amber-500/20 text-[11px] font-mono text-amber-600 dark:text-amber-400">
+          <span className="shrink-0">⚠</span>
+          <span>Variables detected but no environment is active — select one from the top-right dropdown</span>
+        </div>
+      )}
+      {resolvedUrl && resolvedUrl !== request?.url && (
+        <div className="flex items-center gap-2 px-6 py-1.5 bg-emerald-500/5 border-b border-emerald-500/10 text-[11px] font-mono text-emerald-600 dark:text-emerald-400">
+          <span className="text-emerald-500/60 shrink-0">→</span>
+          <span className="truncate" title={resolvedUrl}>{resolvedUrl}</span>
+        </div>
+      )}
 
       {/* TABS */}
       <div className="flex items-center gap-8 px-8 border-b border-border/50 bg-secondary/10 dark:bg-slate-900 text-xs font-bold overflow-x-auto no-scrollbar shadow-inner transition-colors">

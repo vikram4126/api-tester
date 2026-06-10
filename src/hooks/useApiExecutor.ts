@@ -28,7 +28,15 @@ export function useApiExecutor() {
       if (!request) throw new Error('No active request selected');
 
       const vars = environment?.variables || {};
-      let injectedUrl = injectVariables(request.url, vars);
+      
+      let rawUrl = request.url.trim();
+      // Auto-prepend base_url if the user just typed an endpoint path (e.g. /users) and an environment is active with base_url
+      if (rawUrl.startsWith('/') && vars['base_url']) {
+        const base = vars['base_url'].replace(/\/$/, '');
+        rawUrl = `${base}${rawUrl}`;
+      }
+      
+      let injectedUrl = injectVariables(rawUrl, vars);
       
       if (request.params && Object.keys(request.params).length > 0) {
         try {
@@ -45,12 +53,21 @@ export function useApiExecutor() {
       const targetUrl = PROXY_URL + encodeURIComponent(injectedUrl);
       
       const headers = new Headers();
+      let hasAuthHeader = false;
       // Inject variables into headers
       Object.entries(request.headers).forEach(([key, val]) => {
         if (key && typeof val === 'string') {
+          if (key.toLowerCase() === 'authorization') {
+            hasAuthHeader = true;
+          }
           headers.append(injectVariables(key, vars), injectVariables(val, vars));
         }
       });
+
+      // Global bearer token from environment if no explicit auth is set
+      if (!hasAuthHeader && vars['bearer_token']) {
+        headers.append('Authorization', `Bearer ${vars['bearer_token']}`);
+      }
 
       const options: RequestInit = {
         method: request.method,
